@@ -1,8 +1,8 @@
 #!/bin/sh
 
-WINEPREFIX=$HOME/.local/share/wineprefixes/bnet
-WINEARCH=win64
-GAMEID=umu-default
+export WINEPREFIX=$HOME/.local/share/wineprefixes/bnet
+export WINEARCH=win64
+export GAMEID=umu-default
 
 install_bnet() {
   DOWNLOAD_DIR="$(mktemp -d)"
