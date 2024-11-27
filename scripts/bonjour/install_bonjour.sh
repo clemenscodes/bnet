@@ -19,6 +19,3 @@ if [ ! -d "$BONJOUR" ]; then
 fi
 
 ln -s "$BONJOUR" "$BLIZZARD_BONJOUR"
-
-PROTON_VERB=runinprefix net stop 'Bonjour Service'
-PROTON_VERB=runinprefix net start 'Bonjour Service'
