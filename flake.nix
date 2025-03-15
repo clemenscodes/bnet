@@ -31,15 +31,15 @@
     bonjour = pkgs.writeShellApplication {
       name = "bonjour";
       runtimeInputs = [
-        pkgs.wineWowPackages.unstableFull
-        pkgs.winetricks
         umu
       ];
       text = ''
         export WINEPREFIX=$HOME/.local/share/wineprefixes/bnet
         export WINEARCH=win64
-        PROTON_VERB=runinprefix wine net stop 'Bonjour Service'
-        PROTON_VERB=runinprefix wine net start 'Bonjour Service'
+        export PROTON_VERB=runinprefix
+
+        umu-run $WINEPREFIX/drive_c/windows/system32/net.exe stop 'Bonjour Service'
+        umu-run $WINEPREFIX/drive_c/windows/system32/net.exe start 'Bonjour Service'
       '';
     };
     w3champions = pkgs.writeShellApplication {
@@ -54,6 +54,7 @@
         export WINEPREFIX=$HOME/.local/share/wineprefixes/bnet
         export WINEARCH=win64
         export GAMEID=umu-default
+        export PROTON_VERB=runinprefix
 
         install_w3c() {
           W3C_SETUP_URL="https://update-service.w3champions.com/api/launcher/win"
@@ -89,6 +90,7 @@
         export WINEARCH=win64
         export GAMEID=umu-default
         export BNET_EXE="$WINEPREFIX/drive_c/Program Files (x86)/Battle.net/Battle.net.exe"
+        export PROTON_VERB=runinprefix
 
         install_bnet() {
           DOWNLOAD_DIR="$(mktemp -d)"

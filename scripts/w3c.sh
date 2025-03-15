@@ -3,6 +3,7 @@
 export WINEPREFIX=$HOME/.local/share/wineprefixes/bnet
 export WINEARCH=win64
 export GAMEID=umu-default
+export PROTON_VERB=runinprefix
 
 install_w3c() {
   W3C_SETUP_URL="https://update-service.w3champions.com/api/launcher/win"

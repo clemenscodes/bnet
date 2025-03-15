@@ -3,6 +3,7 @@
 export WINEPREFIX=$HOME/.local/share/wineprefixes/bnet
 export WINEARCH=win64
 export GAMEID=umu-default
+export PROTONVERB=runinprefix
 
 PROGRAM_FILES="$WINEPREFIX/drive_c/Program Files"
 BONJOUR="$PROGRAM_FILES/Bonjour"

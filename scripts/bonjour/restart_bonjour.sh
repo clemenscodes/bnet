@@ -3,6 +3,7 @@
 export WINEPREFIX=$HOME/.local/share/wineprefixes/bnet
 export WINEARCH=win64
 export GAMEID=umu-default
+export PROTON_VERB=runinprefix
 
-PROTON_VERB=runinprefix net stop 'Bonjour Service'
-PROTON_VERB=runinprefix net start 'Bonjour Service'
+umu-run $WINEPREFIX/drive_c/windows/system32/net.exe stop 'Bonjour Service'
+umu-run $WINEPREFIX/drive_c/windows/system32/net.exe start 'Bonjour Service'
