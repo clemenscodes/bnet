@@ -58,10 +58,10 @@ Technically this is all that should be required, but as time of writing, there i
 
 Bonjour is used to facilitate the networking components of Warcraft.
 To play ladder, it is required to restart the Bonjour Service in the same wineprefix after launching Battle.net using W3Champions.
-I wrote a [script](./scripts/bonjour/restart_bonjour.sh) for that as well
+I wrote a [script](./scripts/bonjour.sh) for that as well
 
 ```sh
-./scripts/bonjour/restart_bonjour.sh
+./scripts/bonjour.sh
 ```
 
 After successful restart of the Bonjour Service, everything should be good to go.
@@ -75,8 +75,6 @@ To see a more advanced and convenient setup using this in a NixOS system, see my
 
 Please! Feel free to contribute.
 
-
 ## Acknowledgements
 
 Thanks to everyone in the W3Champions Discord server helping each other figuring this stuff out, especially Bogdan for his help and support for linux in the old launcher.
-
