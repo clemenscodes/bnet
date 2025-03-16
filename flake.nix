@@ -37,10 +37,10 @@
         umu
       ];
       text = ''
-        export BNET_EXE="$WINEPREFIX/drive_c/Program Files (x86)/Battle.net/Battle.net.exe"
         export WINEPREFIX=$HOME/.local/share/wineprefixes/bnet
         export WINEARCH=win64
         export GAMEID=umu-default
+        export BNET_EXE="$WINEPREFIX/drive_c/Program Files (x86)/Battle.net/Battle.net.exe"
 
         install_bnet() {
           DOWNLOAD_DIR="$(mktemp -d)"
