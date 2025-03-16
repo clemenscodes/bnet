@@ -10,7 +10,6 @@ install_bnet() {
   BNET_SETUP_EXE="$DOWNLOAD_DIR/BattleNet-Setup.exe"
   BATTLENET_URL="https://www.battle.net/download/getInstallerForGame?os=win&locale=enUS&version=LIVE&gameProgram=BATTLENET_APP"
   echo "Downloading Battle.net Launcher..."
-  mkdir -p "$DOWNLOAD_DIR"
   curl -L "$BATTLENET_URL" -o "$BNET_SETUP_EXE"
   umu-run "$BNET_SETUP_EXE"
 }

@@ -8,11 +8,8 @@ install_w3c() {
   W3C_SETUP_URL="https://update-service.w3champions.com/api/launcher/win"
   DOWNLOAD_DIR="$(mktemp -d)"
   W3C_SETUP_EXE="$DOWNLOAD_DIR/w3c-setup.exe"
-  
   echo "Downloading W3Champions installer..."
-  mkdir -p "$DOWNLOAD_DIR"
   curl -L "$W3C_SETUP_URL" -o "$W3C_SETUP_EXE"
-  
   umu-run "$W3C_SETUP_EXE"
 }
 
