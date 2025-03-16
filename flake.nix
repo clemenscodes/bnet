@@ -32,6 +32,8 @@
       name = "battlenet";
       runtimeInputs = [
         pkgs.curl
+        pkgs.samba
+        pkgs.winetricks
         umu
       ];
       text = ''
