@@ -50,6 +50,7 @@
         export WINEPREFIX=$HOME/.local/share/wineprefixes/bnet
         export WINEARCH=win64
         export BNET_EXE="$WINEPREFIX/drive_c/Program Files (x86)/Battle.net/Battle.net.exe"
+        export PATH="${wine}/bin:$PATH"
 
         install_bnet() {
           DOWNLOAD_DIR="$(mktemp -d)"
@@ -57,6 +58,7 @@
           BATTLENET_URL="https://downloader.battle.net/download/getInstaller?os=win&installer=Battle.net-Setup.exe"
           echo "Downloading Battle.net Launcher..."
           curl -L "$BATTLENET_URL" -o "$BNET_SETUP_EXE"
+          umu-run winetricks dxvk
           umu-run "$BNET_SETUP_EXE"
         }
 
@@ -156,7 +158,6 @@
           winetricks --force corefonts
           winetricks --force vcrun2017
           winetricks --force dotnet40
-          winetricks win7
           wine "$WEBVIEW2_SETUP_EXE"
         }
 
