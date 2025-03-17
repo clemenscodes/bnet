@@ -3,7 +3,6 @@
 export WINEPREFIX=$HOME/.local/share/wineprefixes/bnet
 export WINEARCH=win64
 
-
 install_webview2() {
   WEBVIEW2_SETUP_EXE="../assets/MicrosoftEdgeWebview2Setup.exe"
   winetricks --force vcrun2017

@@ -40,8 +40,11 @@
     battlenet = pkgs.writeShellApplication {
       name = "battlenet";
       runtimeInputs = [
-        wine
         pkgs.curl
+        pkgs.samba
+        pkgs.winetricks
+        wine
+        umu
       ];
       text = ''
         export WINEPREFIX=$HOME/.local/share/wineprefixes/bnet
@@ -54,20 +57,21 @@
           BATTLENET_URL="https://downloader.battle.net/download/getInstaller?os=win&installer=Battle.net-Setup.exe"
           echo "Downloading Battle.net Launcher..."
           curl -L "$BATTLENET_URL" -o "$BNET_SETUP_EXE"
-          wine "$BNET_SETUP_EXE"
+          umu-run "$BNET_SETUP_EXE"
         }
 
         if [[ ! -d "$WINEPREFIX" || ! -f "$BNET_EXE" ]]; then
           install_bnet
         fi
 
-        wine "$BNET_EXE"
+        umu-run "$BNET_EXE"
       '';
     };
     bonjour = pkgs.writeShellApplication {
       name = "bonjour";
       runtimeInputs = [
         wine
+        umu
       ];
       text = ''
         export WINEPREFIX=$HOME/.local/share/wineprefixes/bnet
@@ -80,13 +84,15 @@
     w3champions-legacy = pkgs.writeShellApplication {
       name = "w3champions-legacy";
       runtimeInputs = [
-        wine
         pkgs.curl
+        wine
+        umu
       ];
       text = ''
         export WINEPREFIX=$HOME/.local/share/wineprefixes/bnet
         export W3C_EXE="$WINEPREFIX/drive_c/users/$USER/AppData/Local/Programs/w3champions/w3champions.exe"
         export WINEARCH=win64
+        export PATH="${wine}/bin:$PATH"
 
         install_w3c() {
           W3C_SETUP_URL="https://update-service.w3champions.com/api/launcher/win"
@@ -109,11 +115,13 @@
       runtimeInputs = [
         pkgs.curl
         wine
+        umu
       ];
       text = ''
         export WINEPREFIX=$HOME/.local/share/wineprefixes/bnet
         export W3C_EXE="$WINEPREFIX/drive_c/Program Files/W3Champions/W3Champions.exe"
         export WINEARCH=win64
+        export PATH="${wine}/bin:$PATH"
 
         install_w3c() {
           W3C_SETUP_URL="https://update-service.w3champions.com/api/launcher-e"
@@ -136,6 +144,7 @@
       runtimeInputs = [
         pkgs.winetricks
         wine
+        umu
       ];
       text = ''
         export WINEPREFIX=$HOME/.local/share/wineprefixes/bnet
@@ -146,6 +155,7 @@
           WEBVIEW2_SETUP_EXE="${./assets/MicrosoftEdgeWebview2Setup.exe}"
           winetricks --force corefonts
           winetricks --force vcrun2017
+          winetricks --force dotnet40
           winetricks win7
           wine "$WEBVIEW2_SETUP_EXE"
         }
@@ -157,7 +167,7 @@
     packages = {
       ${system} = {
         inherit battlenet bonjour w3champions w3champions-legacy webview2;
-        default = self.packages.${system}.battlenet;
+        default = self.packages.${system}.w3champions;
       };
     };
     devShells = {
@@ -170,6 +180,24 @@
             w3champions-legacy
             webview2
           ];
+          nativeBuildInputs = [
+            pkgs.winetricks
+            pkgs.samba
+            wine
+            umu
+          ];
+          shellHook = ''
+            export WINEPREFIX=$HOME/.local/share/wineprefixes/bnet
+            export WINEARCH=win64
+            export PATH="${wine}/bin:$PATH"
+            export BNET_EXE="$WINEPREFIX/drive_c/Program Files (x86)/Battle.net/Battle.net.exe"
+            export W3C_EXE="$WINEPREFIX/drive_c/Program Files/W3Champions/W3Champions.exe"
+            export W3C_LEGACY_EXE="$WINEPREFIX/drive_c/users/$USER/AppData/Local/Programs/w3champions/w3champions.exe"
+            export APPDATA="$WINEPREFIX/drive_c/users/$USER/AppData"
+            export APPDATA_LOCAL="$APPDATA/Local"
+            export APPDATA_ROAMING="$APPDATA/Roaming"
+            export W3C_APPDATA="$APPDATA_LOCAL/com.w3champions.client"
+          '';
         };
       };
     };
