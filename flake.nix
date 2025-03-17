@@ -131,10 +131,7 @@
 
         install_webview2() {
           DOWNLOAD_DIR="$(mktemp -d)"
-          WEBVIEW2_SETUP_EXE="$DOWNLOAD_DIR/Microsoft.WebView2.FixedVersionRuntime.134.0.3124.68.x64/msedgewebview2.exe"
-          WEBVIEW2_SETUP_CAB="${./assets/MicrosoftEdgeWebview2Setup.exe}"
-          echo "Unpacking WebView2 cabinet files..."
-          cabextract "$WEBVIEW2_SETUP_CAB" -d "$DOWNLOAD_DIR"
+          WEBVIEW2_SETUP_EXE="${./assets/MicrosoftEdgeWebview2Setup.exe}"
           umu-run winetricks --force corefonts
           umu-run winetricks --force vcrun2017
           umu-run winetricks win7
