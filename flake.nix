@@ -28,6 +28,36 @@
     system = "x86_64-linux";
     pkgs = import nixpkgs {
       inherit system;
+      overlays = [
+        (
+          final: prev: let
+            version = "10.3";
+            src = prev.fetchurl rec {
+              inherit version;
+              url = "https://dl.winehq.org/wine/source/10.x/wine-${version}.tar.xz";
+              hash = "sha256-3j2I/wBWuC/9/KhC8RGVkuSRT0jE6gI3aOBBnDZGfD4=";
+            };
+          in rec
+          {
+            wine-bleeding = prev.winePackages.unstableFull.overrideAttrs (oldAttrs: {
+              inherit version src;
+              name = "wine-bleeding";
+            });
+            wine64-bleeding = prev.wine64Packages.unstableFull.overrideAttrs (oldAttrs: rec {
+              inherit version src;
+              name = "wine64-bleeding";
+            });
+            wine-wow-bleeding = prev.wineWowPackages.unstableFull.overrideAttrs (oldAttrs: rec {
+              inherit version src;
+              name = "wine-wow-bleeding";
+            });
+            wine-wow64-bleeding = prev.wineWow64Packages.unstableFull.overrideAttrs (oldAttrs: {
+              inherit version src;
+              name = "wine-wow64-bleeding";
+            });
+          }
+        )
+      ];
     };
     umu = inputs.umu.packages.${system}.default.override {
       extraPkgs = pkgs: [];
@@ -47,8 +77,8 @@
         umu
       ];
       text = ''
-        export WINEPREFIX=$HOME/.local/share/wineprefixes/bnet
         export WINEARCH=win64
+        export WINEPREFIX=$HOME/.local/share/wineprefixes/bnet
         export BNET_EXE="$WINEPREFIX/drive_c/Program Files (x86)/Battle.net/Battle.net.exe"
         export PATH="${wine}/bin:$PATH"
 
@@ -76,8 +106,8 @@
         umu
       ];
       text = ''
-        export WINEPREFIX=$HOME/.local/share/wineprefixes/bnet
         export WINEARCH=win64
+        export WINEPREFIX=$HOME/.local/share/wineprefixes/bnet
 
         wine stop 'Bonjour Service'
         wine start 'Bonjour Service'
@@ -91,9 +121,9 @@
         umu
       ];
       text = ''
+        export WINEARCH=win64
         export WINEPREFIX=$HOME/.local/share/wineprefixes/bnet
         export W3C_EXE="$WINEPREFIX/drive_c/users/$USER/AppData/Local/Programs/w3champions/w3champions.exe"
-        export WINEARCH=win64
         export PATH="${wine}/bin:$PATH"
 
         install_w3c() {
@@ -120,10 +150,9 @@
         umu
       ];
       text = ''
+        export WINEARCH=win64
         export WINEPREFIX=$HOME/.local/share/wineprefixes/bnet
         export W3C_EXE="$WINEPREFIX/drive_c/Program Files/W3Champions/W3Champions.exe"
-        export WINEARCH=win64
-        export PATH="${wine}/bin:$PATH"
 
         install_w3c() {
           W3C_SETUP_URL="https://update-service.w3champions.com/api/launcher-e"
@@ -131,14 +160,14 @@
           W3C_SETUP_MSI="$DOWNLOAD_DIR/w3c.msi"
           echo "Downloading W3Champions installer..."
           curl -L "$W3C_SETUP_URL" -o "$W3C_SETUP_MSI"
-          wine "$W3C_SETUP_MSI"
+          umu-run "$W3C_SETUP_MSI"
         }
 
         if [ ! -e "$W3C_EXE" ]; then
           install_w3c
         fi
 
-        wine "$W3C_EXE"
+        umu-run "$W3C_EXE"
       '';
     };
     webview2 = pkgs.writeShellApplication {
@@ -151,14 +180,17 @@
       text = ''
         export WINEPREFIX=$HOME/.local/share/wineprefixes/bnet
         export WINEARCH=win64
-        export PATH="${wine}/bin:$PATH"
+        export WEBVIEW2_SETUP_EXE="${./assets/MicrosoftEdgeWebview2Setup.exe}"
 
         install_webview2() {
-          WEBVIEW2_SETUP_EXE="${./assets/MicrosoftEdgeWebview2Setup.exe}"
-          winetricks --force corefonts
-          winetricks --force vcrun2017
-          winetricks --force dotnet40
-          wine "$WEBVIEW2_SETUP_EXE"
+          umu-run winetricks --force corefonts
+          umu-run winetricks --force vcrun2017
+          umu-run winetricks --force dotnet40
+          umu-run "$WEBVIEW2_SETUP_EXE"
+          echo "Finished installing WebView2 runtime..."
+          echo "Now you have to set Windows Version 7 in winecfg for Battle.net.exe and msedgewebview2.exe"
+          echo "Manual step until we find out how to automate this"
+          umu-run winetricks --gui
         }
 
         install_webview2
@@ -184,13 +216,15 @@
           nativeBuildInputs = [
             pkgs.winetricks
             pkgs.samba
-            wine
+            pkgs.wine-wow64-bleeding
+            # wine
+            # pkgs.wineWowPackages.unstableFull
             umu
           ];
           shellHook = ''
-            export WINEPREFIX=$HOME/.local/share/wineprefixes/bnet
             export WINEARCH=win64
-            export PATH="${wine}/bin:$PATH"
+            export WINEPREFIX=$HOME/.local/share/wineprefixes/bnet
+            export WEBVIEW2_SETUP_EXE="${./assets/MicrosoftEdgeWebview2Setup.exe}"
             export BNET_EXE="$WINEPREFIX/drive_c/Program Files (x86)/Battle.net/Battle.net.exe"
             export W3C_EXE="$WINEPREFIX/drive_c/Program Files/W3Champions/W3Champions.exe"
             export W3C_LEGACY_EXE="$WINEPREFIX/drive_c/users/$USER/AppData/Local/Programs/w3champions/w3champions.exe"
